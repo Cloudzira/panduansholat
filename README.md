@@ -6,7 +6,8 @@ Web app statis berbahasa Indonesia untuk belajar tata cara sholat dengan rujukan
 - `index.html` — struktur halaman
 - `styles.css` — desain glassmorphism responsif
 - `data.js` — data tahapan dan bacaan
-- `app.js` — navigasi tahapan, progres belajar, tema, dan audio TTS
+- `app.js` — jadwal sholat, pengingat, wudhu/tayammum, tahapan, tips, pelacak harian, tema, audio TTS
+- `data-extra.js` — materi wudhu, tayammum, pembatal, tips harian
 
 ## Menjalankan di komputer
 Buka `index.html` di browser modern. Untuk pengalaman terbaik gunakan server lokal atau GitHub Pages.
