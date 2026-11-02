@@ -75,6 +75,11 @@ $$("#purifyTabs button").forEach(b=>b.onclick=()=>showPurify(b.dataset.k));showP
 const acc=a=>a.map(x=>`<details class="acc glass"><summary>${x.t}</summary><p>${x.d}</p><p class="src">${x.s}</p></details>`).join("");
 $("#batalWudhu").innerHTML=acc(BATAL_WUDHU);$("#batalSholat").innerHTML=acc(BATAL_SHOLAT);
 
+/* Ragam bacaan */
+const vcard=(g,i)=>{const x=G[g].items[i];return `<div class="vcard"><span class="vtag">${x.tag}</span>${x.ar?`<div class="arabic" lang="ar" dir="rtl">${x.ar}</div>`:""}${x.lt?`<p class="latin">${x.lt}</p>`:""}<p class="translation">${x.m}</p><p class="src">Sumber: ${x.s}</p>${x.ar?`<button class="audio-btn" data-va="${g}|${i}">▶ Dengarkan</button>`:""}</div>`};
+const gHTML=g=>`<h4 class="gtitle">${G[g].title}${G[g].items.length>1?` <em>${G[g].items.length} ragam</em>`:""}</h4><p class="gnote">${G[g].note}</p>${G[g].items.map((_,i)=>vcard(g,i)).join("")}`;
+const grp=ids=>`<div class="detail-label">Bacaan dan ragam riwayat</div>`+ids.map(gHTML).join("");
+document.addEventListener("click",e=>{const b=e.target.closest("[data-va]");if(!b)return;const[g,i]=b.dataset.va.split("|");speakArabic(G[g].items[+i].ar,b)});
 /* Tahapan sholat */
 let cur=0;const done=new Set(store.get("done",[]));
 function render(){
@@ -82,7 +87,7 @@ $("#stepList").innerHTML=PRAYER_STEPS.map((s,i)=>`<button class="step-button ${i
 $$("[data-step]").forEach(b=>b.onclick=()=>{cur=+b.dataset.step;render()});
 $("#progressLabel").textContent=`${done.size} dari ${PRAYER_STEPS.length} selesai`;$("#progressBar").style.width=`${done.size/PRAYER_STEPS.length*100}%`;
 const s=PRAYER_STEPS[cur];
-$("#lesson").innerHTML=`<div class="lesson-top"><span class="lesson-index">Tahap ${cur+1} dari ${PRAYER_STEPS.length}</span><button class="mark-done" id="doneBtn">${done.has(cur)?"✓ Selesai":"Tandai selesai"}</button></div><h3>${s.title}</h3><p class="intro">${s.intro}</p><div class="detail-label">Tata cara</div><p class="detail-text">${s.detail}</p>${s.arabic?`<div class="detail-label">Bacaan</div><div class="arabic" lang="ar" dir="rtl">${s.arabic.replace(/\n/g,"<br>")}</div><div class="latin">${s.latin}</div><p class="translation">${s.meaning}</p><button class="audio-btn" id="audioBtn">▶ Dengarkan</button>`:""}<div class="source-line"><b>Rujukan</b><br>${s.source}</div><div class="lesson-controls"><button id="prevBtn" ${cur===0?"disabled":""}>← Sebelumnya</button><button id="nextBtn" ${cur===PRAYER_STEPS.length-1?"disabled":""}>Berikutnya →</button></div>`;
+$("#lesson").innerHTML=`<div class="lesson-top"><span class="lesson-index">Tahap ${cur+1} dari ${PRAYER_STEPS.length}</span><button class="mark-done" id="doneBtn">${done.has(cur)?"✓ Selesai":"Tandai selesai"}</button></div><h3>${s.title}</h3><p class="intro">${s.intro}</p><div class="detail-label">Tata cara</div><p class="detail-text">${s.detail}</p>${SG[cur]?grp(SG[cur]):s.arabic?`<div class="detail-label">Bacaan</div><div class="arabic" lang="ar" dir="rtl">${s.arabic.replace(/\n/g,"<br>")}</div><div class="latin">${s.latin}</div><p class="translation">${s.meaning}</p><button class="audio-btn" id="audioBtn">▶ Dengarkan</button>`:""}<div class="source-line"><b>Rujukan</b><br>${s.source}</div><div class="lesson-controls"><button id="prevBtn" ${cur===0?"disabled":""}>← Sebelumnya</button><button id="nextBtn" ${cur===PRAYER_STEPS.length-1?"disabled":""}>Berikutnya →</button></div>`;
 $("#doneBtn").onclick=()=>{done.has(cur)?done.delete(cur):done.add(cur);store.set("done",[...done]);render()};
 $("#prevBtn").onclick=()=>{cur=Math.max(0,cur-1);render()};$("#nextBtn").onclick=()=>{cur=Math.min(PRAYER_STEPS.length-1,cur+1);render()};
 const a=$("#audioBtn");if(a)a.onclick=()=>speakArabic(s.arabic,a)}
@@ -101,8 +106,7 @@ $("#streak").textContent=st?`Anda menyelesaikan lima sholat selama ${st} hari be
 $$("[data-t]").forEach(c=>c.onchange=()=>{const s=new Set(log[k]||[]);c.checked?s.add(c.dataset.t):s.delete(c.dataset.t);log[k]=[...s];store.set("log",log);renderTrack();if(s.size===5)toast("Alhamdulillah, lima sholat hari ini lengkap.")})}
 
 /* Bacaan */
-$("#readingGrid").innerHTML=READINGS.map((r,i)=>`<article class="reading-card glass"><h3>${r.title}</h3><div class="arabic" lang="ar" dir="rtl">${r.ar}</div><p class="latin">${r.latin}</p><p class="translation">${r.meaning}</p><button class="audio-btn" data-audio="${i}">▶ Dengarkan</button></article>`).join("");
-$$("[data-audio]").forEach(b=>b.onclick=()=>speakArabic(READINGS[+b.dataset.audio].ar,b));
+$("#readingGrid").innerHTML=Object.keys(G).map(g=>`<details class="acc glass lib"><summary>${G[g].title}<em>${G[g].items.length} ragam</em></summary>${gHTML(g).replace(/^<h4.*?<\/h4>/,"")}</details>`).join("");
 
 computeTimes();renderPrayers();setNotifState();render();showTip();renderTrack();tick();setInterval(tick,1000);
 setInterval(()=>{if(new Date().getHours()===0&&new Date().getMinutes()===0){computeTimes();renderPrayers();renderTrack()}},60000);
