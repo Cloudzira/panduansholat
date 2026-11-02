@@ -7,6 +7,14 @@ const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");clea
 if(store.get("light",false))document.body.classList.add("light");
 $("#themeToggle").onclick=()=>{document.body.classList.toggle("light");store.set("light",document.body.classList.contains("light"))};
 
+/* Audio: sembunyikan tombol jika suara Arab belum tersedia */
+function ttsCheck(){const ok="speechSynthesis"in window&&speechSynthesis.getVoices().some(v=>v.lang.toLowerCase().replace("_","-").startsWith("ar"));document.body.classList.toggle("no-tts",!ok)}
+ttsCheck();if("speechSynthesis"in window){speechSynthesis.addEventListener?.("voiceschanged",ttsCheck);setTimeout(ttsCheck,1500)}
+/* Splash */
+const sp=$("#splash"),hideSplash=()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),600)};
+setTimeout(hideSplash,matchMedia("(prefers-reduced-motion:reduce)").matches?300:1900);sp.onclick=hideSplash;
+/* Menu bawah: tandai bagian aktif */
+if("IntersectionObserver"in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)$$(".bottom-nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+e.target.id))}),{rootMargin:"-40% 0px -55% 0px"});["jadwal","bersuci","panduan","pembatal","tips"].forEach(i=>io.observe($("#"+i)))}
 /* Audio */
 function speakArabic(text,btn){
 if(!text)return toast("Belum ada teks bacaan pada tahapan ini.");

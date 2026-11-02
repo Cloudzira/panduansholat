@@ -6,13 +6,23 @@
 <meta name="description" content="Panduan sholat berdasarkan Sifat Shalat Nabi: jadwal, wudhu, tayammum, pembatal, tips harian, dan pengingat sholat.">
 <title>Panduan Sholat Nabi ﷺ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon.svg"><link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="splash" id="splash" role="presentation"><svg class="splash-logo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="gs" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ff0c4"/><stop offset=".55" stop-color="#d7bd83"/><stop offset="1" stop-color="#7aa7ff"/></linearGradient><radialGradient id="bs" cx=".3" cy=".2" r="1"><stop offset="0" stop-color="#14594a"/><stop offset="1" stop-color="#04120f"/></radialGradient><filter id="fs"><feGaussianBlur stdDeviation="6"/></filter></defs>
+<rect width="512" height="512" rx="112" fill="url(#bs)"/>
+<path d="M256 62 410 150v212L256 450 102 362V150z" fill="none" stroke="url(#gs)" stroke-width="10" stroke-linejoin="round" opacity=".9"/>
+<path d="M256 62 410 150v212L256 450 102 362V150z" fill="none" stroke="url(#gs)" stroke-width="16" filter="url(#fs)" opacity=".5"/>
+<path d="M186 360V250q0-84 70-124 70 40 70 124v110" fill="none" stroke="url(#gs)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M222 360V262q0-50 34-74 34 24 34 74v98" fill="rgba(95,240,196,.16)" stroke="#5ff0c4" stroke-width="5" stroke-linejoin="round"/>
+<path d="M176 360h160" stroke="url(#gs)" stroke-width="14" stroke-linecap="round"/>
+<circle cx="256" cy="250" r="9" fill="#d7bd83"/><circle cx="410" cy="150" r="9" fill="#5ff0c4"/><circle cx="102" cy="362" r="9" fill="#7aa7ff"/></svg>
+<b>SHOLAT NABI ﷺ</b><small>Panduan berdasarkan dalil</small><i class="scan"></i></div>
 <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
 <header class="topbar">
-<a class="brand" href="#beranda"><span class="brand-mark">۞</span><span><b>SHOLAT NABI</b><small>Panduan berdasarkan dalil</small></span></a>
+<a class="brand" href="#beranda"><img class="brand-logo" src="icon.svg" alt="" width="38" height="38"><span><b>SHOLAT NABI</b><small>Panduan berdasarkan dalil</small></span></a>
 <nav class="desktop-nav"><a href="#jadwal">Jadwal</a><a href="#bersuci">Bersuci</a><a href="#panduan">Sholat</a><a href="#pembatal">Pembatal</a><a href="#tips">Tips</a><a href="#rujukan">Rujukan</a></nav>
 <button class="icon-btn" id="themeToggle" aria-label="Ganti tema terang/gelap">◐</button>
 </header>
@@ -67,7 +77,7 @@
 <section id="bacaan" class="section">
 <div class="section-heading"><div><h2>Bacaan sholat</h2><p>Teks Arab, transliterasi, dan maknanya.</p></div></div>
 <div class="reading-grid" id="readingGrid"></div>
-<p class="notice">Audio memakai suara Arab sintetis dari perangkat, bukan rekaman qari. Untuk menghafal dan memperbaiki tajwid, belajarlah langsung kepada guru.</p>
+<p class="notice tts-note">Audio memakai suara Arab sintetis dari perangkat, bukan rekaman qari. Untuk menghafal dan memperbaiki tajwid, belajarlah langsung kepada guru.</p>
 </section>
 
 <section id="rujukan" class="section">
@@ -82,6 +92,7 @@
 </section>
 </main>
 <footer><span>۞</span> Panduan Sholat Nabi ﷺ <small>Belajar dengan ilmu dan adab.</small></footer>
+<nav class="bottom-nav" aria-label="Menu utama"><a href="#jadwal"><i>◷</i>Jadwal</a><a href="#bersuci"><i>💧</i>Bersuci</a><a href="#panduan"><i>۞</i>Sholat</a><a href="#pembatal"><i>⚠</i>Pembatal</a><a href="#tips"><i>✦</i>Tips</a></nav>
 <div class="toast glass" id="toast" role="status"></div>
 <script src="data.js"></script><script src="data-extra.js"></script><script src="app.js"></script>
 </body></html>
