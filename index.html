@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071d1a">
+  <meta name="description" content="Panduan sholat berdasarkan Al-Qur'an dan hadis dengan bacaan, arti, dan referensi.">
+  <title>Panduan Sholat Nabi ﷺ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Beranda">
+      <span class="brand-mark">۞</span><span><b>SHOLAT NABI</b><small>Panduan berdasarkan dalil</small></span>
+    </a>
+    <nav class="desktop-nav">
+      <a href="#panduan">Panduan</a><a href="#bacaan">Bacaan</a><a href="#rujukan">Rujukan</a>
+    </nav>
+    <button class="icon-btn" id="themeToggle" aria-label="Ganti tema">◐</button>
+  </header>
+
+  <main>
+    <section class="hero glass">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="pulse"></span> BELAJAR • PAHAMI • AMALKAN</span>
+        <h1>Sholat dengan<br><em>tuntunan Nabi ﷺ</em></h1>
+        <p>Panduan langkah demi langkah, bacaan Arab, transliterasi, arti, serta rujukan Al-Qur'an dan hadis.</p>
+        <div class="hero-actions"><a class="btn primary" href="#panduan">Mulai belajar <span>↗</span></a><a class="btn ghost" href="#rujukan">Lihat sumber</a></div>
+        <div class="hero-note"><span>✦</span> Mengutamakan dalil, menghormati perbedaan yang berdasar.</div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="arch"><div class="arch-inner"><span>﷽</span><i>الصَّلَاةُ</i><small>Tiang agama</small></div></div>
+        <div class="floating-tag tag-top">01 <small>NIAT</small></div><div class="floating-tag tag-bottom">02 <small>TAKBIR</small></div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat glass"><b>12</b><span>Tahapan utama</span></div>
+      <div class="stat glass"><b>3</b><span>Format bacaan</span></div>
+      <div class="stat glass"><b>∞</b><span>Belajar berulang</span></div>
+    </section>
+
+    <section id="panduan" class="section">
+      <div class="section-heading"><div><span class="eyebrow">PANDUAN INTERAKTIF</span><h2>Ikuti setiap tahapan</h2><p>Pilih satu tahapan untuk melihat tata cara, bacaan, dan dalilnya.</p></div><div class="progress-wrap"><span id="progressLabel">0 dari 12 selesai</span><div class="progress"><i id="progressBar"></i></div></div></div>
+      <div class="learning-layout">
+        <aside class="step-list glass" id="stepList" aria-label="Daftar tahapan"></aside>
+        <article class="lesson glass" id="lesson" aria-live="polite"></article>
+      </div>
+    </section>
+
+    <section id="bacaan" class="section">
+      <div class="section-heading"><div><span class="eyebrow">PERPUSTAKAAN BACAAN</span><h2>Bacaan sholat</h2><p>Pelajari teks Arab, transliterasi, dan maknanya.</p></div></div>
+      <div class="reading-grid" id="readingGrid"></div>
+      <p class="notice">Audio menggunakan suara Arab sintetis dari perangkat (Text-to-Speech), bukan rekaman qari. Ketersediaan dan ketepatan pelafalan bergantung pada perangkat. Untuk menghafal dan memperbaiki tajwid, tetap gunakan talaqqi kepada guru dan rekaman qari tepercaya.</p>
+    </section>
+
+    <section id="rujukan" class="section">
+      <div class="section-heading"><div><span class="eyebrow">LANDASAN ILMIAH</span><h2>Rujukan utama</h2><p>Rujukan dicantumkan agar materi dapat diperiksa kembali.</p></div></div>
+      <div class="sources-grid">
+        <a class="source-card glass" href="https://sunnah.com/bukhari:631" target="_blank" rel="noopener"><span>HADIS • TATA CARA</span><b>Shahih al-Bukhari 631</b><p>“Sholatlah sebagaimana kalian melihat aku sholat.”</p><small>Buka sumber ↗</small></a>
+        <a class="source-card glass" href="https://sunnah.com/muslim:490" target="_blank" rel="noopener"><span>HADIS • SUJUD</span><b>Shahih Muslim 490</b><p>Perintah bersujud di atas tujuh anggota tubuh.</p><small>Buka sumber ↗</small></a>
+        <a class="source-card glass" href="https://quran.com/4/103" target="_blank" rel="noopener"><span>AL-QUR'AN</span><b>QS. An-Nisa' 4:103</b><p>Ketentuan waktu-waktu sholat bagi orang beriman.</p><small>Buka sumber ↗</small></a>
+        <a class="source-card glass" href="https://sunnah.com/muslim:397a" target="_blank" rel="noopener"><span>HADIS • AL-FATIHAH</span><b>Shahih Muslim 397a</b><p>Keutamaan dan kedudukan Al-Fatihah dalam sholat.</p><small>Buka sumber ↗</small></a>
+      </div>
+      <div class="method-note glass"><b>Catatan metodologi</b><p>Materi awal ini adalah kerangka belajar, bukan fatwa. Derajat dan penomoran hadis dapat berbeda antar-edisi/terjemahan. Beberapa rincian gerakan dan bacaan memiliki variasi riwayat yang diterima ulama. Versi lanjutan perlu menambahkan takhrij per bacaan, penjelasan perbedaan riwayat, serta telaah ahli sebelum dipublikasikan sebagai panduan final.</p></div>
+    </section>
+  </main>
+  <footer><span>۞</span> Panduan Sholat Nabi ﷺ <small>Belajar dengan ilmu dan adab.</small></footer>
+  <script src="data.js"></script><script src="app.js"></script>
+</body>
+</html>
