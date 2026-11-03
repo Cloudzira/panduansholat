@@ -1,4 +1,4 @@
-# Panduan Sholat Nabi ﷺ
+# Panduan Sholat
 
 Web app statis berbahasa Indonesia untuk belajar tata cara sholat dengan rujukan Al-Qur'an dan hadis. Dibangun dengan HTML, CSS, dan JavaScript murni sehingga dapat di-host di GitHub Pages.
 

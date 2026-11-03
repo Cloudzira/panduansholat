@@ -117,4 +117,15 @@ $("#readingGrid").innerHTML=Object.keys(G).map(g=>`<details class="acc glass lib
 
 computeTimes();renderPrayers();setNotifState();render();showTip();renderTrack();tick();setInterval(tick,1000);
 setInterval(()=>{if(new Date().getHours()===0&&new Date().getMinutes()===0){computeTimes();renderPrayers();renderTrack()}},60000);
+/* Instal aplikasi (PWA) */
+let dip=null;const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent||"");
+const standalone=()=>(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone;
+function syncInstall(){$$(".install-btn").forEach(b=>b.hidden=!!standalone())}
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();dip=e;syncInstall()});
+window.addEventListener("appinstalled",()=>{dip=null;$$(".install-btn").forEach(b=>b.hidden=true);toast("Aplikasi berhasil dipasang.")});
+async function doInstall(){if(dip){dip.prompt();try{await dip.userChoice}catch(e){}dip=null;return}
+toast(isIOS?"Di iPhone/iPad: ketuk Bagikan lalu pilih Tambah ke Layar Utama.":"Buka menu browser lalu pilih Instal aplikasi atau Tambahkan ke layar utama.")}
+$$(".install-btn").forEach(b=>b.onclick=doInstall);syncInstall();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+
 go(location.hash.slice(1)||store.get("view","home"));

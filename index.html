@@ -4,10 +4,10 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#071d1a">
 <meta name="description" content="Panduan sholat berdasarkan Sifat Shalat Nabi: jadwal, wudhu, tayammum, pembatal, tips harian, dan pengingat sholat.">
-<title>Panduan Sholat Nabi ﷺ</title>
+<title>Panduan Sholat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="icon.svg"><link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png" type="image/png" sizes="192x192"><link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,10 +19,10 @@
 <path d="M222 360V262q0-50 34-74 34 24 34 74v98" fill="rgba(95,240,196,.16)" stroke="#5ff0c4" stroke-width="5" stroke-linejoin="round"/>
 <path d="M176 360h160" stroke="url(#gs)" stroke-width="14" stroke-linecap="round"/>
 <circle cx="256" cy="250" r="9" fill="#d7bd83"/><circle cx="410" cy="150" r="9" fill="#5ff0c4"/><circle cx="102" cy="362" r="9" fill="#7aa7ff"/></svg>
-<b>SHOLAT NABI ﷺ</b><small>Panduan berdasarkan dalil</small><i class="scan"></i></div>
+<b>PANDUAN SHOLAT</b><small>Berdasarkan Sifat Shalat Nabi ﷺ</small><i class="scan"></i></div>
 <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
 <div class="app">
-<header class="appbar"><div class="brand"><img class="brand-logo" src="icon.svg" alt="" width="38" height="38"><span><b>SHOLAT NABI ﷺ</b><small id="viewTitle">Beranda</small></span></div><button class="icon-btn" id="themeToggle" aria-label="Ganti tema terang/gelap">◐</button></header>
+<header class="appbar"><div class="brand"><img class="brand-logo" src="icon.svg" alt="" width="38" height="38"><span><b>PANDUAN SHOLAT</b><small id="viewTitle">Beranda</small></span></div><div class="bar-actions"><button class="install-btn" id="installBtn" aria-label="Instal aplikasi">⬇ Instal</button><button class="icon-btn" id="themeToggle" aria-label="Ganti tema terang/gelap">◐</button></div></header>
 
 <div class="views" id="views">
 <section class="view on" id="v-home"><div class="home-grid">
@@ -43,7 +43,22 @@
 
 <section class="view" id="v-bacaan"><p class="notice">Setiap bacaan dilengkapi ragam riwayat, arti, dan sumber hadis. Ketuk bacaan untuk membuka.</p><div class="lib-list" id="readingGrid"></div><p class="notice tts-note">Audio memakai suara Arab sintetis dari perangkat, bukan rekaman qari. Untuk menghafal dan memperbaiki tajwid, belajarlah langsung kepada guru.</p></section>
 
-<section class="view" id="v-info"><div class="sources-grid">
+<section class="view" id="v-info">
+<div class="install-card glass"><div><b>Pasang di layar utama</b><p>Buka lebih cepat seperti aplikasi biasa, tampil layar penuh, dan tetap bisa dibuka saat sinyal lemah.</p></div><button class="install-btn big" aria-label="Instal aplikasi">⬇ Instal aplikasi</button></div>
+<h4 class="gtitle">Tentang aplikasi</h4>
+<details class="acc glass" open><summary>Apa itu Panduan Sholat?</summary><p>Aplikasi belajar sholat yang mengikuti tuntunan Nabi ﷺ (Sifat Shalat Nabi). Isinya tahapan sholat dari takbir sampai salam, tata cara wudhu dan tayammum, pembatal wudhu dan sholat, perpustakaan bacaan dengan ragam riwayat, jadwal sholat, pengingat, tips harian, dan pelacak lima sholat.</p></details>
+<details class="acc glass"><summary>Sumber dan batasan materi</summary><p>Setiap tahapan dan bacaan dicantumkan rujukannya (Al-Qur'an dan hadis). Aplikasi ini sarana belajar, bukan fatwa. Perbedaan pendapat ulama yang berdalil ditandai sebagai khilafiyah. Nomor dan derajat hadis dapat berbeda antar-edisi, jadi verifikasi sebelum dijadikan rujukan final dan belajarlah langsung kepada guru.</p></details>
+<details class="acc glass"><summary>Privasi dan data</summary><p>Tanpa akun. Progres belajar, pengingat, dan catatan sholat tersimpan di perangkat Anda. Lokasi hanya dipakai untuk menghitung jadwal di perangkat dan tidak dikirim ke server kami. Jadwal memakai rumus astronomi (Subuh 20°, Isya 18°), jadi cocokkan dengan jadwal Kemenag atau masjid setempat.</p></details>
+<details class="acc glass"><summary>Versi</summary><p>Panduan Sholat 1.0 · 2026</p></details>
+<h4 class="gtitle">Panduan penggunaan</h4>
+<details class="acc glass"><summary>Beranda: jadwal, pengingat, dan tips</summary><p>Lihat sholat berikutnya beserta hitungan mundurnya. Ketuk “Lokasi saya” agar jadwal sesuai tempat Anda. Ketuk lonceng pada sholat yang ingin diingatkan, lalu pilih waktu pengingat. Centang setiap sholat yang sudah ditunaikan untuk mengisi catatan harian dan rangkaian hari berturut-turut.</p></details>
+<details class="acc glass"><summary>Mengaktifkan notifikasi pengingat</summary><p>Ketuk “Aktifkan notifikasi” di Beranda lalu izinkan. Pengingat berbunyi selama aplikasi terbuka atau berjalan di latar belakang perangkat Anda. Jika notifikasi diblokir, izinkan lewat pengaturan situs di browser.</p></details>
+<details class="acc glass"><summary>Bersuci: wudhu, tayammum, pembatal</summary><p>Pilih Wudhu, Tayammum, atau Pembatal. Wudhu dan tayammum tampil satu langkah per kartu: ketuk “Lanjut” atau titik di atas kartu untuk berpindah. Pada Pembatal, ketuk judul untuk membuka penjelasan dan dalilnya.</p></details>
+<details class="acc glass"><summary>Sholat: belajar tahap demi tahap</summary><p>Geser deretan tahapan di atas dan pilih satu tahap. Buka bagian “Tata cara” untuk gerakan, lalu pelajari bacaannya. Bila ada beberapa riwayat, ketuk angka 1, 2, 3… untuk berganti ragam. Tandai “Selesai” untuk mencatat progres Anda.</p></details>
+<details class="acc glass"><summary>Bacaan dan tombol suara</summary><p>Tab Bacaan memuat semua bacaan sholat lengkap dengan Arab, latin, arti, dan sumber. Tombol “Dengarkan” hanya muncul bila perangkat memiliki suara Arab. Suaranya sintetis, bukan rekaman qari.</p></details>
+<details class="acc glass"><summary>Memasang aplikasi</summary><p>Ketuk “Instal” di bagian atas atau di halaman ini, lalu setujui. Di iPhone/iPad, ketuk ikon Bagikan di Safari lalu pilih “Tambah ke Layar Utama”. Pemasangan memerlukan alamat https (misalnya GitHub Pages atau Vercel), bukan file yang dibuka langsung.</p></details>
+<h4 class="gtitle">Rujukan utama</h4>
+<div class="sources-grid">
 <a class="source-card glass" href="https://sunnah.com/bukhari:631" target="_blank" rel="noopener"><span>Hadis</span><b>Shahih al-Bukhari 631</b><p>“Sholatlah sebagaimana kalian melihat aku sholat.”</p><small>Buka sumber ↗</small></a>
 <a class="source-card glass" href="https://sunnah.com/muslim:490" target="_blank" rel="noopener"><span>Hadis</span><b>Shahih Muslim 490</b><p>Perintah bersujud di atas tujuh anggota tubuh.</p><small>Buka sumber ↗</small></a>
 <a class="source-card glass" href="https://quran.com/5/6" target="_blank" rel="noopener"><span>Al-Qur'an</span><b>QS. Al-Ma'idah 5:6</b><p>Dasar wudhu dan tayammum.</p><small>Buka sumber ↗</small></a>
