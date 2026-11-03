@@ -13,8 +13,10 @@ ttsCheck();if("speechSynthesis"in window){speechSynthesis.addEventListener?.("vo
 /* Splash */
 const sp=$("#splash"),hideSplash=()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),600)};
 setTimeout(hideSplash,matchMedia("(prefers-reduced-motion:reduce)").matches?300:1900);sp.onclick=hideSplash;
-/* Menu bawah: tandai bagian aktif */
-if("IntersectionObserver"in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)$$(".bottom-nav a").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+e.target.id))}),{rootMargin:"-40% 0px -55% 0px"});["jadwal","bersuci","panduan","pembatal","tips"].forEach(i=>io.observe($("#"+i)))}
+/* Navigasi layar (gaya aplikasi) */
+const TITLES={home:"Beranda",bersuci:"Wudhu, tayammum & pembatal",sholat:"Tahapan sholat",bacaan:"Perpustakaan bacaan",info:"Rujukan & info"};
+function go(v){if(!TITLES[v])v="home";$$(".view").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));$$(".tabbar button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));$("#viewTitle").textContent=TITLES[v];$("#views").scrollTop=0;store.set("view",v);try{history.replaceState(null,"","#"+v)}catch(e){}}
+$$(".tabbar button").forEach(b=>b.onclick=()=>go(b.dataset.v));
 /* Audio */
 function speakArabic(text,btn){
 if(!text)return toast("Belum ada teks bacaan pada tahapan ini.");
@@ -68,29 +70,34 @@ $("#leadSel").value=lead;$("#leadSel").onchange=e=>{lead=+e.target.value;store.s
 $("#locBtn").onclick=()=>{if(!navigator.geolocation)return toast("Lokasi tidak didukung browser ini.");
 navigator.geolocation.getCurrentPosition(p=>{loc={lat:p.coords.latitude,lng:p.coords.longitude,name:`${p.coords.latitude.toFixed(2)}, ${p.coords.longitude.toFixed(2)}`};store.set("loc",loc);computeTimes();renderPrayers();tick();toast("Jadwal diperbarui sesuai lokasi Anda.")},()=>toast("Izin lokasi ditolak. Jadwal memakai lokasi bawaan."),{timeout:8000})};
 
-/* Bersuci */
-const stepsHTML=(a,extra)=>a.map((x,i)=>`<li><span class="num">${i+1}</span><div><b>${x.t}</b><p>${x.d}</p>${x.ar?`<div class="arabic" lang="ar" dir="rtl">${x.ar}</div><p class="latin">${x.lt}</p><p class="translation">${x.m}</p>`:""}<p class="src">${x.s}</p></div></li>`).join("");
-function showPurify(k){$$("#purifyTabs button").forEach(b=>b.classList.toggle("on",b.dataset.k===k));$("#purifyList").innerHTML=stepsHTML(k==="wudhu"?WUDHU:TAYAMMUM)}
-$$("#purifyTabs button").forEach(b=>b.onclick=()=>showPurify(b.dataset.k));showPurify("wudhu");
-const acc=a=>a.map(x=>`<details class="acc glass"><summary>${x.t}</summary><p>${x.d}</p><p class="src">${x.s}</p></details>`).join("");
-$("#batalWudhu").innerHTML=acc(BATAL_WUDHU);$("#batalSholat").innerHTML=acc(BATAL_SHOLAT);
-
-/* Ragam bacaan */
+/* Bersuci & pembatal */
+const acc=x=>x.map(y=>`<details class="acc glass"><summary>${y.t}</summary><p>${y.d}</p><p class="src">${y.s}</p></details>`).join("");
+let pk="wudhu",pi=0;
+function renderPurify(){$$("#purifyTabs button").forEach(b=>b.classList.toggle("on",b.dataset.k===pk));const box=$("#purifyList");
+if(pk==="pembatal"){box.innerHTML=`<h4 class="gtitle">Pembatal wudhu</h4>${acc(BATAL_WUDHU)}<h4 class="gtitle">Pembatal sholat</h4>${acc(BATAL_SHOLAT)}`;return}
+const arr=pk==="wudhu"?WUDHU:TAYAMMUM,x=arr[pi];
+box.innerHTML=`<div class="stepcard glass"><div class="dots">${arr.map((_,n)=>`<i class="${n===pi?"on":n<pi?"past":""}" data-pi="${n}"></i>`).join("")}</div><span class="lesson-index">Langkah ${pi+1} dari ${arr.length}</span><h3>${x.t}</h3><p class="detail-text">${x.d}</p>${x.ar?`<div class="arabic" lang="ar" dir="rtl">${x.ar}</div><p class="latin">${x.lt}</p><p class="translation">${x.m}</p>`:""}<p class="src">Sumber: ${x.s}</p><div class="lesson-controls"><button id="pPrev" ${pi===0?"disabled":""}>← Kembali</button><button id="pNext" ${pi===arr.length-1?"disabled":""}>Lanjut →</button></div></div>`;
+$("#pPrev").onclick=()=>{pi--;renderPurify()};$("#pNext").onclick=()=>{pi++;renderPurify()};$$("[data-pi]").forEach(d=>d.onclick=()=>{pi=+d.dataset.pi;renderPurify()})}
+$$("#purifyTabs button").forEach(b=>b.onclick=()=>{pk=b.dataset.k;pi=0;renderPurify()});renderPurify();
+/* Ragam bacaan & tahapan sholat */
+const sv={},sg={};let cur=0;const done=new Set(store.get("done",[]));
 const vcard=(g,i)=>{const x=G[g].items[i];return `<div class="vcard"><span class="vtag">${x.tag}</span>${x.ar?`<div class="arabic" lang="ar" dir="rtl">${x.ar}</div>`:""}${x.lt?`<p class="latin">${x.lt}</p>`:""}<p class="translation">${x.m}</p><p class="src">Sumber: ${x.s}</p>${x.ar?`<button class="audio-btn" data-va="${g}|${i}">▶ Dengarkan</button>`:""}</div>`};
-const gHTML=g=>`<h4 class="gtitle">${G[g].title}${G[g].items.length>1?` <em>${G[g].items.length} ragam</em>`:""}</h4><p class="gnote">${G[g].note}</p>${G[g].items.map((_,i)=>vcard(g,i)).join("")}`;
-const grp=ids=>`<div class="detail-label">Bacaan dan ragam riwayat</div>`+ids.map(gHTML).join("");
-document.addEventListener("click",e=>{const b=e.target.closest("[data-va]");if(!b)return;const[g,i]=b.dataset.va.split("|");speakArabic(G[g].items[+i].ar,b)});
-/* Tahapan sholat */
-let cur=0;const done=new Set(store.get("done",[]));
+const gInner=(g,lib)=>{const q=G[g],n=q.items.length,i=Math.min(sv[g]||0,n-1);return `${lib?"":`<h4 class="gtitle">${q.title}</h4>`}<p class="gnote">${q.note}</p>${n>1?`<div class="chips">${q.items.map((_,j)=>`<button class="chip ${j===i?"on":""}" data-vg="${g}" data-vi="${j}">${j+1}</button>`).join("")}<span class="chipnote">${n} ragam riwayat</span></div>`:""}${vcard(g,i)}`};
+function readHTML(){const ids=SG[cur],k=Math.min(sg[cur]||0,ids.length-1);return (ids.length>1?`<div class="seg">${ids.map((g,j)=>`<button class="${j===k?"on":""}" data-gt="${j}">${G[g].title.replace(/ \(.*\)/,"")}</button>`).join("")}</div>`:"")+`<div class="gblk" data-g="${ids[k]}">${gInner(ids[k])}</div>`}
+document.addEventListener("click",e=>{let b=e.target.closest("[data-va]");if(b){const[g,i]=b.dataset.va.split("|");speakArabic(G[g].items[+i].ar,b);return}
+b=e.target.closest("[data-vg]");if(b){sv[b.dataset.vg]=+b.dataset.vi;const k=b.closest(".gblk");k.innerHTML=gInner(b.dataset.vg,k.dataset.lib==="1");return}
+b=e.target.closest("[data-gt]");if(b){sg[cur]=+b.dataset.gt;$("#readArea").innerHTML=readHTML()}});
 function render(){
-$("#stepList").innerHTML=PRAYER_STEPS.map((s,i)=>`<button class="step-button ${i===cur?"active":""} ${done.has(i)?"done":""}" data-step="${i}"><span class="step-num">${done.has(i)?"✓":pad(i+1)}</span><span><b>${s.title}</b><small>${s.tag}</small></span></button>`).join("");
+$("#stepList").innerHTML=PRAYER_STEPS.map((s,i)=>`<button class="schip ${i===cur?"active":""} ${done.has(i)?"done":""}" data-step="${i}"><span>${done.has(i)?"✓":i+1}</span>${s.title}</button>`).join("");
 $$("[data-step]").forEach(b=>b.onclick=()=>{cur=+b.dataset.step;render()});
+const ac=$(".schip.active");if(ac&&ac.scrollIntoView)try{ac.scrollIntoView({inline:"center",block:"nearest"})}catch(e){}
 $("#progressLabel").textContent=`${done.size} dari ${PRAYER_STEPS.length} selesai`;$("#progressBar").style.width=`${done.size/PRAYER_STEPS.length*100}%`;
 const s=PRAYER_STEPS[cur];
-$("#lesson").innerHTML=`<div class="lesson-top"><span class="lesson-index">Tahap ${cur+1} dari ${PRAYER_STEPS.length}</span><button class="mark-done" id="doneBtn">${done.has(cur)?"✓ Selesai":"Tandai selesai"}</button></div><h3>${s.title}</h3><p class="intro">${s.intro}</p><div class="detail-label">Tata cara</div><p class="detail-text">${s.detail}</p>${SG[cur]?grp(SG[cur]):s.arabic?`<div class="detail-label">Bacaan</div><div class="arabic" lang="ar" dir="rtl">${s.arabic.replace(/\n/g,"<br>")}</div><div class="latin">${s.latin}</div><p class="translation">${s.meaning}</p><button class="audio-btn" id="audioBtn">▶ Dengarkan</button>`:""}<div class="source-line"><b>Rujukan</b><br>${s.source}</div><div class="lesson-controls"><button id="prevBtn" ${cur===0?"disabled":""}>← Sebelumnya</button><button id="nextBtn" ${cur===PRAYER_STEPS.length-1?"disabled":""}>Berikutnya →</button></div>`;
+const main=s.arabic?`<div class="arabic" lang="ar" dir="rtl">${s.arabic.replace(/\n/g,"<br>")}</div><div class="latin">${s.latin}</div><p class="translation">${s.meaning}</p><button class="audio-btn" id="audioBtn">▶ Dengarkan</button>`:"";
+$("#lesson").innerHTML=`<div class="lesson-top"><span class="lesson-index">Tahap ${cur+1} dari ${PRAYER_STEPS.length}</span><button class="mark-done" id="doneBtn">${done.has(cur)?"✓ Selesai":"Tandai selesai"}</button></div><h3>${s.title}</h3><p class="intro">${s.intro}</p><details class="how" open><summary>Tata cara</summary><p class="detail-text">${s.detail}</p></details><div id="readArea">${SG[cur]?readHTML():main}</div><div class="source-line"><b>Rujukan</b> ${s.source}</div><div class="lesson-controls"><button id="prevBtn" ${cur===0?"disabled":""}>← Sebelumnya</button><button id="nextBtn" ${cur===PRAYER_STEPS.length-1?"disabled":""}>Berikutnya →</button></div>`;
 $("#doneBtn").onclick=()=>{done.has(cur)?done.delete(cur):done.add(cur);store.set("done",[...done]);render()};
-$("#prevBtn").onclick=()=>{cur=Math.max(0,cur-1);render()};$("#nextBtn").onclick=()=>{cur=Math.min(PRAYER_STEPS.length-1,cur+1);render()};
-const a=$("#audioBtn");if(a)a.onclick=()=>speakArabic(s.arabic,a)}
+$("#prevBtn").onclick=()=>{cur=Math.max(0,cur-1);render();$("#views").scrollTop=0};$("#nextBtn").onclick=()=>{cur=Math.min(PRAYER_STEPS.length-1,cur+1);render();$("#views").scrollTop=0};
+const au=$("#audioBtn");if(au)au.onclick=()=>speakArabic(s.arabic,au)}
 
 /* Tips & pelacak */
 let tipI=Math.floor(Date.now()/864e5)%TIPS.length;
@@ -106,7 +113,8 @@ $("#streak").textContent=st?`Anda menyelesaikan lima sholat selama ${st} hari be
 $$("[data-t]").forEach(c=>c.onchange=()=>{const s=new Set(log[k]||[]);c.checked?s.add(c.dataset.t):s.delete(c.dataset.t);log[k]=[...s];store.set("log",log);renderTrack();if(s.size===5)toast("Alhamdulillah, lima sholat hari ini lengkap.")})}
 
 /* Bacaan */
-$("#readingGrid").innerHTML=Object.keys(G).map(g=>`<details class="acc glass lib"><summary>${G[g].title}<em>${G[g].items.length} ragam</em></summary>${gHTML(g).replace(/^<h4.*?<\/h4>/,"")}</details>`).join("");
+$("#readingGrid").innerHTML=Object.keys(G).map(g=>`<details class="acc glass lib"><summary>${G[g].title}<em>${G[g].items.length} ragam</em></summary><div class="gblk" data-g="${g}" data-lib="1">${gInner(g,true)}</div></details>`).join("");
 
 computeTimes();renderPrayers();setNotifState();render();showTip();renderTrack();tick();setInterval(tick,1000);
 setInterval(()=>{if(new Date().getHours()===0&&new Date().getMinutes()===0){computeTimes();renderPrayers();renderTrack()}},60000);
+go(location.hash.slice(1)||store.get("view","home"));

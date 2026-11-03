@@ -21,78 +21,39 @@
 <circle cx="256" cy="250" r="9" fill="#d7bd83"/><circle cx="410" cy="150" r="9" fill="#5ff0c4"/><circle cx="102" cy="362" r="9" fill="#7aa7ff"/></svg>
 <b>SHOLAT NABI ﷺ</b><small>Panduan berdasarkan dalil</small><i class="scan"></i></div>
 <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-<header class="topbar">
-<a class="brand" href="#beranda"><img class="brand-logo" src="icon.svg" alt="" width="38" height="38"><span><b>SHOLAT NABI</b><small>Panduan berdasarkan dalil</small></span></a>
-<nav class="desktop-nav"><a href="#jadwal">Jadwal</a><a href="#bersuci">Bersuci</a><a href="#panduan">Sholat</a><a href="#pembatal">Pembatal</a><a href="#tips">Tips</a><a href="#rujukan">Rujukan</a></nav>
-<button class="icon-btn" id="themeToggle" aria-label="Ganti tema terang/gelap">◐</button>
-</header>
-<main>
-<section id="beranda" class="hero glass">
-<div class="hero-copy">
-<span class="eyebrow"><span class="pulse"></span> Belajar, pahami, amalkan</span>
-<h1>Sholat dengan tuntunan Nabi ﷺ</h1>
-<p>Jadwal dan pengingat, tata cara wudhu dan tayammum, tahapan sholat lengkap dengan bacaan, arti, serta rujukan Al-Qur'an dan hadis.</p>
-<div class="hero-actions"><a class="btn primary" href="#panduan">Mulai belajar</a><a class="btn ghost" href="#jadwal">Atur pengingat</a></div>
-</div>
-<div class="next-card glass" aria-live="polite">
-<small>Sholat berikutnya</small><b id="nextName">–</b>
-<svg viewBox="0 0 120 120" class="ring" aria-hidden="true"><circle cx="60" cy="60" r="52" class="r-bg"/><circle cx="60" cy="60" r="52" class="r-fg" id="ringFg"/></svg>
-<div class="ring-text"><strong id="nextCount">--:--:--</strong><span id="nextTime">pukul --:--</span></div>
-</div>
-</section>
+<div class="app">
+<header class="appbar"><div class="brand"><img class="brand-logo" src="icon.svg" alt="" width="38" height="38"><span><b>SHOLAT NABI ﷺ</b><small id="viewTitle">Beranda</small></span></div><button class="icon-btn" id="themeToggle" aria-label="Ganti tema terang/gelap">◐</button></header>
 
-<section id="jadwal" class="section">
-<div class="section-heading"><div><h2>Jadwal & pengingat sholat</h2><p id="locLabel">Menghitung jadwal untuk lokasi Anda.</p></div><button class="btn ghost small" id="locBtn">Gunakan lokasi saya</button></div>
+<div class="views" id="views">
+<section class="view on" id="v-home"><div class="home-grid">
+<div>
+<div class="next-card glass" aria-live="polite"><div><small>Sholat berikutnya</small><b id="nextName">–</b><strong id="nextCount">--:--:--</strong><span id="nextTime">pukul --:--</span></div><svg viewBox="0 0 120 120" class="ring" aria-hidden="true"><circle cx="60" cy="60" r="52" class="r-bg"/><circle cx="60" cy="60" r="52" class="r-fg" id="ringFg"/></svg></div>
 <div class="prayer-grid" id="prayerGrid"></div>
-<div class="reminder-bar glass">
-<label>Ingatkan <select id="leadSel"><option value="0">tepat waktu</option><option value="10">10 menit sebelum</option><option value="15">15 menit sebelum</option><option value="30">30 menit sebelum</option></select></label>
-<button class="btn primary small" id="notifBtn">Aktifkan notifikasi</button>
-<small id="notifState">Pengingat berjalan selama halaman terbuka. Pilih lonceng pada sholat yang ingin diingatkan.</small>
+<div class="loc-row"><span id="locLabel">Menghitung jadwal…</span><button class="btn ghost small" id="locBtn">📍 Lokasi saya</button></div>
+<div class="reminder-bar glass"><label>🔔 Ingatkan <select id="leadSel"><option value="0">tepat waktu</option><option value="10">10 menit sebelum</option><option value="15">15 menit sebelum</option><option value="30">30 menit sebelum</option></select></label><button class="btn primary small" id="notifBtn">Aktifkan notifikasi</button><small id="notifState"></small></div>
 </div>
-</section>
-
-<section id="bersuci" class="section">
-<div class="section-heading"><div><h2>Tata cara bersuci</h2><p>Wudhu dan tayammum sesuai tuntunan Nabi ﷺ.</p></div><div class="tabs" id="purifyTabs"><button class="on" data-k="wudhu">Wudhu</button><button data-k="tayammum">Tayammum</button></div></div>
-<ol class="steps glass" id="purifyList"></ol>
-</section>
-
-<section id="pembatal" class="section">
-<div class="section-heading"><div><h2>Pembatal wudhu dan sholat</h2><p>Kenali agar ibadah tetap sah. Sentuh judul untuk membuka penjelasan.</p></div></div>
-<div class="two-col"><div><h3 class="col-title">Pembatal wudhu</h3><div id="batalWudhu"></div></div><div><h3 class="col-title">Pembatal sholat</h3><div id="batalSholat"></div></div></div>
-</section>
-
-<section id="panduan" class="section">
-<div class="section-heading"><div><h2>Tahapan sholat</h2><p>Pilih tahapan untuk melihat tata cara, bacaan, dan dalilnya.</p></div><div class="progress-wrap"><span id="progressLabel"></span><div class="progress"><i id="progressBar"></i></div></div></div>
-<div class="learning-layout"><aside class="step-list glass" id="stepList" aria-label="Daftar tahapan"></aside><article class="lesson glass" id="lesson" aria-live="polite"></article></div>
-</section>
-
-<section id="tips" class="section">
-<div class="section-heading"><div><h2>Semangat sholat setiap hari</h2><p>Satu tips setiap hari dan catatan sholat Anda hari ini.</p></div></div>
-<div class="two-col">
+<div>
 <article class="tip glass"><small id="tipNo"></small><h3 id="tipTitle"></h3><p id="tipBody"></p><p class="src" id="tipSrc"></p><button class="btn ghost small" id="tipNext">Tip lainnya</button></article>
 <article class="tip glass"><small>Sholat hari ini</small><h3 id="trackCount">0 dari 5</h3><div class="track" id="track"></div><p class="src" id="streak"></p></article>
-</div>
-</section>
+</div></div></section>
 
-<section id="bacaan" class="section">
-<div class="section-heading"><div><h2>Perpustakaan bacaan</h2><p>Setiap bacaan lengkap dengan ragam riwayat, arti, dan sumber hadis.</p></div></div>
-<div class="lib-list" id="readingGrid"></div>
-<p class="notice tts-note">Audio memakai suara Arab sintetis dari perangkat, bukan rekaman qari. Untuk menghafal dan memperbaiki tajwid, belajarlah langsung kepada guru.</p>
-</section>
+<section class="view" id="v-bersuci"><div class="tabs seg" id="purifyTabs"><button class="on" data-k="wudhu">Wudhu</button><button data-k="tayammum">Tayammum</button><button data-k="pembatal">Pembatal</button></div><div id="purifyList"></div></section>
 
-<section id="rujukan" class="section">
-<div class="section-heading"><div><h2>Rujukan utama</h2><p>Dicantumkan agar materi dapat diperiksa kembali.</p></div></div>
-<div class="sources-grid">
+<section class="view" id="v-sholat"><div class="progress-wrap"><span id="progressLabel"></span><div class="progress"><i id="progressBar"></i></div></div><div class="step-list" id="stepList" aria-label="Daftar tahapan"></div><article class="lesson glass" id="lesson" aria-live="polite"></article></section>
+
+<section class="view" id="v-bacaan"><p class="notice">Setiap bacaan dilengkapi ragam riwayat, arti, dan sumber hadis. Ketuk bacaan untuk membuka.</p><div class="lib-list" id="readingGrid"></div><p class="notice tts-note">Audio memakai suara Arab sintetis dari perangkat, bukan rekaman qari. Untuk menghafal dan memperbaiki tajwid, belajarlah langsung kepada guru.</p></section>
+
+<section class="view" id="v-info"><div class="sources-grid">
 <a class="source-card glass" href="https://sunnah.com/bukhari:631" target="_blank" rel="noopener"><span>Hadis</span><b>Shahih al-Bukhari 631</b><p>“Sholatlah sebagaimana kalian melihat aku sholat.”</p><small>Buka sumber ↗</small></a>
 <a class="source-card glass" href="https://sunnah.com/muslim:490" target="_blank" rel="noopener"><span>Hadis</span><b>Shahih Muslim 490</b><p>Perintah bersujud di atas tujuh anggota tubuh.</p><small>Buka sumber ↗</small></a>
 <a class="source-card glass" href="https://quran.com/5/6" target="_blank" rel="noopener"><span>Al-Qur'an</span><b>QS. Al-Ma'idah 5:6</b><p>Dasar wudhu dan tayammum.</p><small>Buka sumber ↗</small></a>
-<a class="source-card glass" href="https://quran.com/4/103" target="_blank" rel="noopener"><span>Al-Qur'an</span><b>QS. An-Nisa' 4:103</b><p>Sholat memiliki waktu yang ditentukan.</p><small>Buka sumber ↗</small></a>
+<a class="source-card glass" href="https://quran.com/4/103" target="_blank" rel="noopener"><span>Al-Qur'an</span><b>QS. An-Nisa' 4:103</b><p>Sholat memiliki waktu yang ditentukan.</p><small>Buka sumber ↗</small></a></div>
+<div class="method-note glass"><b>Catatan metodologi</b><p>Materi ini kerangka belajar, bukan fatwa. Nomor dan derajat hadis dapat berbeda antar-edisi, verifikasi sebelum dijadikan rujukan final. Perbedaan pendapat ulama yang berdalil dicantumkan sebagai khilafiyah; ikuti bimbingan guru tepercaya. Jadwal dihitung dengan rumus astronomi (Subuh 20°, Isya 18°); cocokkan dengan jadwal Kemenag atau masjid setempat.</p></div>
+<p class="notice">Panduan Sholat Nabi ﷺ · belajar dengan ilmu dan adab.</p></section>
 </div>
-<div class="method-note glass"><b>Catatan metodologi</b><p>Materi ini kerangka belajar, bukan fatwa. Nomor dan derajat hadis dapat berbeda antar-edisi. Perbedaan pendapat ulama yang berdalil dicantumkan sebagai khilafiyah; ikuti bimbingan guru tepercaya. Jadwal dihitung dengan rumus astronomi (Subuh 20°, Isya 18°); cocokkan dengan jadwal Kemenag atau masjid setempat.</p></div>
-</section>
-</main>
-<footer><span>۞</span> Panduan Sholat Nabi ﷺ <small>Belajar dengan ilmu dan adab.</small></footer>
-<nav class="bottom-nav" aria-label="Menu utama"><a href="#jadwal"><i>◷</i>Jadwal</a><a href="#bersuci"><i>💧</i>Bersuci</a><a href="#panduan"><i>۞</i>Sholat</a><a href="#pembatal"><i>⚠</i>Pembatal</a><a href="#tips"><i>✦</i>Tips</a></nav>
+
+<nav class="tabbar" aria-label="Menu utama"><button data-v="home" class="on"><i>◷</i>Beranda</button><button data-v="bersuci"><i>💧</i>Bersuci</button><button data-v="sholat"><i>۞</i>Sholat</button><button data-v="bacaan"><i>📖</i>Bacaan</button><button data-v="info"><i>ⓘ</i>Info</button></nav>
+</div>
 <div class="toast glass" id="toast" role="status"></div>
 <script src="data.js"></script><script src="data-extra.js"></script><script src="app.js"></script>
 </body></html>
