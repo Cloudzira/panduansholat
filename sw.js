@@ -1,4 +1,4 @@
-const V="panduan-sholat-v1",ASSETS=["./","index.html","styles.css","data.js","data-extra.js","app.js","icon.svg","icon-192.png","icon-512.png","manifest.webmanifest"];
+const V="panduan-sholat-v2",ASSETS=["./","index.html","styles.css","data.js","data-extra.js","app.js","icon.svg","icon-192.png","icon-512.png","manifest.webmanifest"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;

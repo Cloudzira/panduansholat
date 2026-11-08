@@ -103,7 +103,7 @@ body.light .tabbar{background:rgba(255,255,255,.8)}
 .kurnia-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:var(--text);background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.04));border:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 rgba(255,255,255,.18);transition:transform .2s,color .2s,border-color .2s}
 .kurnia-icon svg{width:21px;height:21px}
 .kurnia-icon:hover,.kurnia-icon:focus-visible{transform:translateY(-3px)}
-.kurnia-icon.ig:hover{color:#f58ab4;border-color:#f58ab4}.kurnia-icon.tt:hover{color:#5ff0c4;border-color:#5ff0c4}.kurnia-icon.web:hover{color:var(--gold);border-color:var(--gold)}.kurnia-icon.wa:hover{color:#6ee09a;border-color:#6ee09a}
+.kurnia-icon.ig:hover{color:#f58ab4;border-color:#f58ab4}.kurnia-icon.tt:hover{color:#5ff0c4;border-color:#5ff0c4}.kurnia-icon.web:hover{color:var(--gold);border-color:var(--gold)}
 body.light .kurnia-icon{background:rgba(255,255,255,.8)}
 .app-footer{text-align:center;font-size:12.5px;color:var(--muted);padding:14px 0 6px}.app-footer span{color:var(--gold);font-weight:700}
 /* v7: instal & info */
