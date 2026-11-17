@@ -174,3 +174,10 @@ body.light .prayer.next{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold
 @media(min-width:600px){.sheet-back{align-items:center}}
 @media(prefers-reduced-motion:reduce){.update-bar,.sheet{animation:none}}
 .update-bar{background:var(--bg2)}
+
+/* v10: daftar pilihan semua dropdown terbaca di mode gelap & terang */
+select{color-scheme:dark}body.light select{color-scheme:light}
+select option,select optgroup{background:#0c2b25;color:#eef8f1}
+body.light select option,body.light select optgroup{background:#fff;color:#17382c}
+select option:checked{background:#1d5a49;color:#fff}
+body.light select option:checked{background:#d9ecdf;color:#17382c}
