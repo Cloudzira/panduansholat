@@ -37,3 +37,9 @@ Konten di `data.js` adalah materi awal dan kerangka pembelajaran. Sebelum dipubl
 - Tambahkan materi sholat wajib 2/3/4 rakaat dengan peta rakaat.
 - Tambahkan pembahasan sholat sunnah, berjamaah, musafir, sakit, sujud sahwi, dan sholat jenazah.
 - Tambahkan daftar variasi riwayat dengan takhrij dan catatan kualitas.
+
+## Merilis pembaruan
+Setiap kali Anda mengunggah versi baru, **naikkan angka versi `V` di baris pertama `sw.js`** (misalnya `panduan-sholat-v4` menjadi `panduan-sholat-v5`). Pengguna yang membuka aplikasi akan melihat banner "Pembaruan tersedia" dan dapat memperbarui dengan satu ketukan. Tanpa perubahan `sw.js`, browser tidak mengetahui ada versi baru.
+
+## Instal aplikasi
+Tombol Instal memasang aplikasi langsung di Chrome, Edge, dan Samsung Internet (Android dan desktop) lewat https. iPhone/iPad dan browser yang belum mendukung menampilkan lembar langkah singkat, karena platform tersebut tidak mengizinkan pemasangan otomatis.

@@ -157,3 +157,20 @@ body.light .tabbar button.on{background:rgba(138,100,16,.12)}
 body.light .arabic{background:rgba(138,100,16,.07);border-color:rgba(138,100,16,.25)}
 body.light .vtag,body.light .tabs button.on,body.light .seg button.on{background:rgba(138,100,16,.14)}
 body.light .prayer.next{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),var(--shadow)}
+
+/* v9: banner pembaruan & lembar petunjuk instal */
+.update-bar{position:fixed;z-index:60;left:50%;top:calc(66px + env(safe-area-inset-top));transform:translateX(-50%);width:min(560px,calc(100% - 24px));display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;border-color:var(--gold);animation:ubin .35s ease both}
+.update-bar[hidden]{display:none}
+.update-bar .ub-text{flex:1;min-width:0}.update-bar b{display:block;font-size:14px;color:var(--gold)}.update-bar small{display:block;margin-top:3px;font-size:12px;line-height:1.5;color:var(--muted)}
+.ub-actions{display:flex;gap:8px;flex:none}
+@keyframes ubin{from{opacity:0;transform:translate(-50%,-10px)}}
+@media(max-width:420px){.update-bar{flex-direction:column;align-items:stretch}.ub-actions .btn{flex:1;justify-content:center}}
+.sheet-back{position:fixed;inset:0;z-index:80;background:rgba(2,10,8,.6);display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.sheet-back[hidden]{display:none}
+.sheet{width:min(460px,100%);padding:20px;border-radius:24px;background:var(--bg2);animation:ubin .3s ease both}
+.sheet h3{font:600 19px Sora,sans-serif;margin:0 0 12px}.sheet ol{margin:0 0 12px;padding-left:22px;font-size:14px;line-height:1.7}.sheet li{margin-bottom:6px}
+.sheet-note{font-size:12.5px;line-height:1.6;color:var(--muted);margin:0 0 14px}
+.sheet .btn{width:100%;justify-content:center;min-height:44px}
+@media(min-width:600px){.sheet-back{align-items:center}}
+@media(prefers-reduced-motion:reduce){.update-bar,.sheet{animation:none}}
+.update-bar{background:var(--bg2)}

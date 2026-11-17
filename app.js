@@ -156,13 +156,47 @@ $("#readingGrid").innerHTML=Object.keys(G).map(g=>`<details class="acc glass lib
 
 computeTimes();renderPrayers();setNotifState();render();showTip();renderTrack();tick();scheduleReminder();setInterval(tick,1000);
 /* Instal aplikasi (PWA) */
-let dip=null;
-function syncInstall(){$$(".install-btn").forEach(b=>b.hidden=!!standalone())}
-window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();dip=e;syncInstall()});
-window.addEventListener("appinstalled",()=>{dip=null;$$(".install-btn").forEach(b=>b.hidden=true);toast("Aplikasi berhasil dipasang.")});
-async function doInstall(){if(dip){dip.prompt();try{await dip.userChoice}catch(e){}dip=null;return}
-toast(isIOS?"Di iPhone/iPad: ketuk Bagikan lalu pilih Tambah ke Layar Utama.":"Buka menu browser lalu pilih Instal aplikasi atau Tambahkan ke layar utama.")}
+let dip=window.__dip||null;
+const installed=()=>!!standalone();
+function syncInstall(){$$(".install-btn").forEach(b=>b.hidden=installed())}
+window.addEventListener("pwa-ready",()=>{dip=window.__dip;syncInstall()});
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();dip=e;window.__dip=e;syncInstall()});
+window.addEventListener("appinstalled",()=>{dip=null;window.__dip=null;syncInstall();toast("Aplikasi berhasil dipasang. Buka dari layar utama.")});
+function openSheet(){
+const ua=navigator.userAgent||"",android=/android/i.test(ua);let steps,note;
+if(isIOS){steps=["Ketuk ikon <b>Bagikan</b> (kotak dengan panah ke atas) di Safari.","Gulir lalu pilih <b>Tambah ke Layar Utama</b>.","Ketuk <b>Tambah</b>. Ikon aplikasi muncul di layar utama."];note="iPhone/iPad tidak mengizinkan situs memasang aplikasi otomatis, jadi pemasangan dilakukan lewat menu Bagikan. Gunakan Safari (atau Chrome/Edge versi terbaru)."}
+else if(android){steps=["Ketuk menu <b>⋮</b> di pojok browser.","Pilih <b>Instal aplikasi</b> atau <b>Tambahkan ke layar utama</b>.","Ketuk <b>Instal</b>."];note="Tombol Instal otomatis aktif di Chrome, Edge, atau Samsung Internet setelah halaman dimuat beberapa detik. Jika tidak muncul, aplikasi mungkin sudah terpasang: cek layar utama Anda."}
+else{steps=["Buka halaman ini di <b>Chrome</b> atau <b>Edge</b>.","Klik ikon <b>Instal</b> di kanan bilah alamat, atau menu <b>⋮</b> lalu <b>Instal Panduan Sholat</b>.","Klik <b>Instal</b>."];note="Firefox dan Safari desktop belum mendukung pemasangan aplikasi web. Pemasangan juga memerlukan alamat https."}
+$("#sheetSteps").innerHTML=steps.map(x=>`<li>${x}</li>`).join("");$("#sheetNote").textContent=note;$("#installSheet").hidden=false;$("#sheetClose").focus()}
+const closeSheet=()=>{$("#installSheet").hidden=true};
+$("#sheetClose").onclick=closeSheet;$("#installSheet").onclick=e=>{if(e.target.id==="installSheet")closeSheet()};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+async function doInstall(){
+if(!dip){openSheet();return}
+const ev=dip;dip=null;window.__dip=null;
+try{await ev.prompt();const c=await ev.userChoice;toast(c&&c.outcome==="accepted"?"Memasang aplikasi…":"Pemasangan dibatalkan. Ketuk Instal kapan saja untuk mencoba lagi.")}
+catch(e){openSheet()}}
 $$(".install-btn").forEach(b=>b.onclick=doInstall);syncInstall();
-if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+
+/* Pembaruan aplikasi: tampil di awal aplikasi dibuka */
+let swReg=null,updating=false,dismissed=false;
+function offerUpdate(){if(dismissed)return;const show=()=>{$("#updateBar").hidden=false};
+if(document.getElementById("splash"))setTimeout(show,2300);else show()}
+function watchWorker(w){if(!w)return;const chk=()=>{if(w.state==="installed"&&navigator.serviceWorker.controller)offerUpdate()};w.addEventListener("statechange",chk);chk()}
+$("#updateLater").onclick=()=>{dismissed=true;$("#updateBar").hidden=true};
+$("#updateNow").onclick=()=>{const w=swReg&&swReg.waiting;if(!w){location.reload();return}
+updating=true;$("#updateNow").disabled=true;$("#updateNow").textContent="Memperbarui…";w.postMessage({type:"SKIP_WAITING"});setTimeout(()=>location.reload(),4000)};
+$("#checkUpdate").onclick=async()=>{if(!swReg)return toast("Pembaruan hanya tersedia saat aplikasi dibuka lewat https.");
+toast("Memeriksa pembaruan…");try{await swReg.update()}catch(e){return toast("Gagal memeriksa pembaruan. Periksa koneksi internet.")}
+if(swReg.waiting||swReg.installing){dismissed=false;watchWorker(swReg.installing||swReg.waiting);if(swReg.waiting)offerUpdate();toast("Pembaruan ditemukan.")}else toast("Anda sudah memakai versi terbaru.")};
+if("serviceWorker"in navigator){
+navigator.serviceWorker.addEventListener("controllerchange",()=>{if(updating)location.reload()});
+const reg=()=>navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{swReg=r;
+if(r.waiting&&navigator.serviceWorker.controller)offerUpdate();
+r.addEventListener("updatefound",()=>watchWorker(r.installing));
+r.update().catch(()=>{});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)r.update().catch(()=>{})});
+setInterval(()=>r.update().catch(()=>{}),30*6e4)}).catch(()=>{});
+if(document.readyState==="complete")reg();else window.addEventListener("load",reg)}
 
 go(location.hash.slice(1)||store.get("view","home"));
