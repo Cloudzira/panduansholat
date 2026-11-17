@@ -136,3 +136,24 @@ body.light .loc-row select option,body.light .loc-row select optgroup{background
 .notif-actions{display:flex;gap:8px;flex-wrap:wrap}.notif-actions[hidden],.notif-actions .btn[hidden]{display:none}
 .reminder-bar small{flex:1 1 100%}
 @media(prefers-reduced-motion:reduce){.tabbar button,.icon-btn{transition:none}}
+
+/* v8: perbaikan tampilan */
+/* tombol navigasi pelajaran: tidak lagi menempel, tanpa pita transparan */
+.lesson-controls,body.light .lesson-controls{position:static;bottom:auto;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0;margin-top:18px}
+.lesson-controls button{background:var(--panel)}
+.lesson-controls button:disabled{opacity:.4}
+/* header: judul tidak membungkus dan tidak menabrak tombol */
+.appbar{gap:10px}.appbar .brand{min-width:0;flex:1 1 auto}.appbar .brand>span{min-width:0}
+.appbar .brand b,.appbar .brand small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-actions{flex:none}
+@media(max-width:380px){.appbar{padding-inline:12px}.appbar .brand-logo{width:32px;height:32px}.appbar .brand b{font-size:12px;letter-spacing:.5px}.icon-btn,.install-btn:not(.big){width:38px;height:38px;min-height:38px}.bar-actions{gap:6px}}
+/* kolom pilihan tidak melebar berlebihan di layar lebar */
+.lead-label select{flex:0 1 260px}.loc-row select{max-width:420px}
+/* mode terang: warna aksen lebih gelap agar terbaca */
+body.light{--gold:#8a6410;--green:#2b6c4d}
+body.light .chip.on,body.light .schip.active span{color:#fff}
+body.light .install-btn,body.light .btn.primary{color:#18372c}
+body.light .tabbar button.on{background:rgba(138,100,16,.12)}
+body.light .arabic{background:rgba(138,100,16,.07);border-color:rgba(138,100,16,.25)}
+body.light .vtag,body.light .tabs button.on,body.light .seg button.on{background:rgba(138,100,16,.14)}
+body.light .prayer.next{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),var(--shadow)}

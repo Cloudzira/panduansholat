@@ -14,7 +14,7 @@ ttsCheck();if("speechSynthesis"in window){speechSynthesis.addEventListener?.("vo
 const sp=$("#splash"),hideSplash=()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),600)};
 setTimeout(hideSplash,matchMedia("(prefers-reduced-motion:reduce)").matches?300:1900);sp.onclick=hideSplash;
 /* Navigasi layar (gaya aplikasi) */
-const TITLES={home:"Beranda",bersuci:"Wudhu, tayammum & pembatal",sholat:"Tahapan sholat",bacaan:"Perpustakaan bacaan",info:"Rujukan & info"};
+const TITLES={home:"Beranda",bersuci:"Bersuci",sholat:"Tahapan sholat",bacaan:"Bacaan",info:"Info & rujukan"};
 let curV="home",lastV="home";
 function go(v){if(!TITLES[v])v="home";curV=v;if(v!=="info")lastV=v;$$(".view").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));$$(".tabbar button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));const ib=$("#infoBtn");ib.classList.toggle("on",v==="info");ib.setAttribute("aria-pressed",String(v==="info"));$("#viewTitle").textContent=TITLES[v];$("#views").scrollTop=0;store.set("view",v);try{history.replaceState(null,"","#"+v)}catch(e){}}
 $$(".tabbar button").forEach(b=>b.onclick=()=>go(b.dataset.v));
