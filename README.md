@@ -7,6 +7,8 @@ Web app statis berbahasa Indonesia untuk belajar tata cara sholat dengan rujukan
 - `styles.css` — desain glassmorphism responsif
 - `data.js` — data tahapan dan bacaan
 - `app.js` — jadwal sholat, pengingat, wudhu/tayammum, tahapan, tips, pelacak harian, tema, audio TTS
+- `cities.js` — daftar 83 kota Indonesia (koordinat dan zona waktu WIB/WITA/WIT)
+- `sw.js` — service worker (cache offline dan klik notifikasi)
 - `data-extra.js` — materi wudhu, tayammum, pembatal, tips harian
 
 ## Menjalankan di komputer

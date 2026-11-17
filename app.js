@@ -15,8 +15,10 @@ const sp=$("#splash"),hideSplash=()=>{sp.classList.add("out");setTimeout(()=>sp.
 setTimeout(hideSplash,matchMedia("(prefers-reduced-motion:reduce)").matches?300:1900);sp.onclick=hideSplash;
 /* Navigasi layar (gaya aplikasi) */
 const TITLES={home:"Beranda",bersuci:"Wudhu, tayammum & pembatal",sholat:"Tahapan sholat",bacaan:"Perpustakaan bacaan",info:"Rujukan & info"};
-function go(v){if(!TITLES[v])v="home";$$(".view").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));$$(".tabbar button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));$("#viewTitle").textContent=TITLES[v];$("#views").scrollTop=0;store.set("view",v);try{history.replaceState(null,"","#"+v)}catch(e){}}
+let curV="home",lastV="home";
+function go(v){if(!TITLES[v])v="home";curV=v;if(v!=="info")lastV=v;$$(".view").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));$$(".tabbar button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));const ib=$("#infoBtn");ib.classList.toggle("on",v==="info");ib.setAttribute("aria-pressed",String(v==="info"));$("#viewTitle").textContent=TITLES[v];$("#views").scrollTop=0;store.set("view",v);try{history.replaceState(null,"","#"+v)}catch(e){}}
 $$(".tabbar button").forEach(b=>b.onclick=()=>go(b.dataset.v));
+$("#infoBtn").onclick=()=>go(curV==="info"?lastV:"info");
 /* Audio */
 function speakArabic(text,btn){
 if(!text)return toast("Belum ada teks bacaan pada tahapan ini.");
@@ -26,6 +28,8 @@ const u=new SpeechSynthesisUtterance(text.replace(/\n/g,"، "));u.lang="ar";u.ra
 const v=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith("ar"));if(v)u.voice=v;
 u.onstart=()=>btn.textContent="◼ Hentikan";u.onend=u.onerror=()=>btn.textContent=idle;speechSynthesis.speak(u)}
 
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent||"");
+const standalone=()=>(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone;
 /* Jadwal sholat (rumus astronomi; Subuh 20°, Isya 18°, Asar mazhab Syafi'i) */
 const R=Math.PI/180,sin=x=>Math.sin(x*R),cos=x=>Math.cos(x*R),tan=x=>Math.tan(x*R),acos=x=>Math.acos(x)/R;
 function calc(date,lat,lng,tz){
@@ -36,39 +40,74 @@ const noon=12+tz-lng/15-(q/15-ra+(q/15-ra<-12?24:q/15-ra>12?-24:0));
 const T=a=>{const c=(sin(a)-sin(dec)*sin(lat))/(cos(dec)*cos(lat));return isNaN(c)||Math.abs(c)>1?NaN:acos(c)/15};
 const asr=Math.atan(1/(1+tan(Math.abs(lat-dec))))/R;
 return{Subuh:noon-T(-20),Syuruq:noon-T(-.833),Dzuhur:noon+2/60,Ashar:noon+T(asr),Maghrib:noon+T(-.833),Isya:noon+T(-18)}}
-const NAMES=["Subuh","Dzuhur","Ashar","Maghrib","Isya"];
-let loc=store.get("loc",{lat:-6.2,lng:106.82,name:"Jakarta (bawaan)"}),times={};
-const at=(h,base=new Date())=>{const x=new Date(base);x.setHours(0,0,0,0);x.setMinutes(Math.round(h*60));return x};
-const hm=d=>`${pad(d.getHours())}:${pad(d.getMinutes())}`;
-function computeTimes(base=new Date()){const c=calc(base,loc.lat,loc.lng,-base.getTimezoneOffset()/60);times={};for(const k in c)times[k]=at(c[k],base)}
+const NAMES=["Subuh","Dzuhur","Ashar","Maghrib","Isya"],GRACE=10*6e4;
+let cityName=store.get("city","Jakarta");if(!CITIES[cityName])cityName="Jakarta";
+let times={},tomorrow=null;
+const tzOf=()=>CITIES[cityName].tz,tzLabel=()=>({7:"WIB",8:"WITA",9:"WIT"})[tzOf()];
+const hm=d=>{const x=new Date(d.getTime()+tzOf()*36e5);return `${pad(x.getUTCHours())}:${pad(x.getUTCMinutes())}`};
+function cityDay(off=0){const n=new Date(Date.now()+tzOf()*36e5+off*864e5),y=n.getUTCFullYear(),m=n.getUTCMonth(),d=n.getUTCDate();return{y,m,d,key:`${y}-${m+1}-${d}`}}
+function timesFor(off=0){const c=CITIES[cityName],{y,m,d,key}=cityDay(off),r=calc(new Date(y,m,d),c.lat,c.lng,c.tz),o={key};
+for(const k in r)o[k]=isNaN(r[k])?null:new Date(Date.UTC(y,m,d)-c.tz*36e5+Math.round(r[k]*60)*6e4);return o}
+const computeTimes=()=>{times=timesFor(0);tomorrow=null},getTomorrow=()=>tomorrow||(tomorrow=timesFor(1));
+function ensureToday(){if(times.key!==cityDay().key){computeTimes();renderPrayers();renderTrack();scheduleReminder()}}
 let remind=store.get("remind",{Subuh:1,Dzuhur:1,Ashar:1,Maghrib:1,Isya:1}),lead=store.get("lead",0),fired=store.get("fired",{});
 function renderPrayers(){
-$("#locLabel").textContent=`Lokasi: ${loc.name}. Jadwal dihitung otomatis, cocokkan dengan jadwal masjid setempat.`;
+$("#locLabel").textContent=`Jadwal untuk ${cityName} (${tzLabel()}), dihitung otomatis. Cocokkan dengan jadwal Kemenag atau masjid setempat.`;
 $("#prayerGrid").innerHTML=["Subuh","Syuruq","Dzuhur","Ashar","Maghrib","Isya"].map(n=>`<div class="prayer glass" data-p="${n}"><small>${n==="Syuruq"?"Terbit":"Sholat"}</small><b>${n}</b><strong>${times[n]?hm(times[n]):"--:--"}</strong>${n==="Syuruq"?"":`<button class="bell ${remind[n]?"on":""}" data-bell="${n}" aria-pressed="${!!remind[n]}" aria-label="Pengingat ${n}">${remind[n]?"🔔":"🔕"}</button>`}</div>`).join("");
-$$("[data-bell]").forEach(b=>b.onclick=()=>{remind[b.dataset.bell]=remind[b.dataset.bell]?0:1;store.set("remind",remind);renderPrayers();markTrack()})}
-function nextPrayer(){const now=new Date();for(const n of NAMES)if(times[n]>now)return{n,t:times[n]};computeTimes(new Date(Date.now()+864e5));const r={n:"Subuh",t:times.Subuh};computeTimes();return r}
+$$("[data-bell]").forEach(b=>b.onclick=()=>{const n=b.dataset.bell;remind[n]=remind[n]?0:1;store.set("remind",remind);renderPrayers();scheduleReminder();
+if(remind[n]&&"Notification"in window&&Notification.permission!=="granted")toast("Pengingat aktif. Aktifkan notifikasi agar muncul di layar.");tick()})}
+function nextPrayer(){const now=new Date();for(const n of NAMES)if(times[n]&&times[n]>now)return{n,t:times[n]};return{n:"Subuh",t:getTomorrow().Subuh}}
 function tick(){
+ensureToday();
 const now=new Date(),nx=nextPrayer(),ms=nx.t-now,idx=NAMES.indexOf(nx.n);
-const prev=idx>0?times[NAMES[idx-1]]:new Date(nx.t-864e5*.25),span=Math.max(nx.t-prev,1);
-$("#nextName").textContent=nx.n;$("#nextTime").textContent=`pukul ${hm(nx.t)}`;
+const prev=idx>0?times[NAMES[idx-1]]:(times.Isya&&now>=times.Isya?times.Isya:new Date(nx.t-6*36e5)),span=Math.max(nx.t-prev,1);
+$("#nextName").textContent=nx.n;$("#nextTime").textContent=`pukul ${hm(nx.t)} ${tzLabel()}`;
 const s=Math.max(0,Math.floor(ms/1000));$("#nextCount").textContent=`${pad(Math.floor(s/3600))}:${pad(Math.floor(s%3600/60))}:${pad(s%60)}`;
 const C=2*Math.PI*52;$("#ringFg").style.strokeDasharray=C;$("#ringFg").style.strokeDashoffset=C*Math.min(1,Math.max(0,ms/span));
 $$(".prayer").forEach(p=>p.classList.toggle("next",p.dataset.p===nx.n));
-const today=dayKey();if(fired.day!==today){fired={day:today};store.set("fired",fired)}
-NAMES.forEach(n=>{if(!remind[n]||!times[n])return;const key=n+lead,diff=times[n]-lead*6e4-now;
-if(diff<=0&&diff>-9e4&&!fired[key]){fired[key]=1;store.set("fired",fired);notify(n)}})}
-function notify(n){const msg=lead?`${lead} menit lagi masuk waktu ${n}. Siapkan wudhu.`:`Waktu ${n} telah masuk. Mari sholat.`;
-toast(msg);if(navigator.vibrate)navigator.vibrate([200,100,200]);
-if("Notification"in window&&Notification.permission==="granted")try{new Notification("Pengingat Sholat",{body:msg})}catch(e){}}
-function markTrack(){}
-function setNotifState(){const el=$("#notifState"),b=$("#notifBtn");
-if(!("Notification"in window)){el.textContent="Browser belum mendukung notifikasi; pengingat tampil sebagai pesan di halaman.";b.hidden=true;return}
-const p=Notification.permission;b.hidden=p==="granted";
-el.textContent=p==="granted"?"Notifikasi aktif. Pengingat berjalan selama halaman terbuka.":p==="denied"?"Notifikasi diblokir di browser. Izinkan lewat pengaturan situs.":"Pengingat berjalan selama halaman terbuka. Aktifkan notifikasi agar muncul di layar."}
-$("#notifBtn").onclick=async()=>{try{await Notification.requestPermission()}catch(e){}setNotifState()};
-$("#leadSel").value=lead;$("#leadSel").onchange=e=>{lead=+e.target.value;store.set("lead",lead);toast("Pengingat diatur.")};
-$("#locBtn").onclick=()=>{if(!navigator.geolocation)return toast("Lokasi tidak didukung browser ini.");
-navigator.geolocation.getCurrentPosition(p=>{loc={lat:p.coords.latitude,lng:p.coords.longitude,name:`${p.coords.latitude.toFixed(2)}, ${p.coords.longitude.toFixed(2)}`};store.set("loc",loc);computeTimes();renderPrayers();tick();toast("Jadwal diperbarui sesuai lokasi Anda.")},()=>toast("Izin lokasi ditolak. Jadwal memakai lokasi bawaan."),{timeout:8000})};
+checkReminders()}
+
+/* Notifikasi pengingat */
+async function showNotif(title,body,tag){
+if(!("Notification"in window)||Notification.permission!=="granted")return false;
+const o={body,icon:"icon-192.png",badge:"icon-192.png",tag,renotify:true,vibrate:[200,100,200],lang:"id",data:{url:"./index.html"}};
+try{const reg=navigator.serviceWorker&&await navigator.serviceWorker.getRegistration();if(reg&&reg.active){await reg.showNotification(title,o);return true}}catch(e){}
+try{new Notification(title,o);return true}catch(e){return false}}
+function reminderText(n){const rem=Math.ceil((times[n]-Date.now())/6e4);
+if(rem>0)return `${rem} menit lagi masuk waktu ${n}. Siapkan wudhu.`;
+const late=-rem;return late>=2?`Waktu ${n} telah masuk ${late} menit yang lalu. Mari sholat.`:`Waktu ${n} telah masuk. Mari sholat.`}
+function notify(n){const msg=reminderText(n);toast(msg);if(navigator.vibrate)try{navigator.vibrate([200,100,200])}catch(e){}
+showNotif(`Pengingat Sholat ${n}`,msg,`sholat-${n}-${times.key}`)}
+function checkReminders(){const now=Date.now();
+if(fired.day!==times.key){fired={day:times.key};store.set("fired",fired)}
+NAMES.forEach(n=>{if(!remind[n]||!times[n])return;const key=`${n}@${lead}`,diff=times[n]-lead*6e4-now;
+if(diff<=0&&diff>-GRACE&&!fired[key]){fired[key]=1;store.set("fired",fired);notify(n)}})}
+/* Tandai pengingat yang waktunya sudah lewat agar tidak berbunyi mendadak setelah ganti kota/jeda */
+function markPassed(){const now=Date.now();if(fired.day!==times.key)fired={day:times.key};NAMES.forEach(n=>{if(times[n]&&times[n]-lead*6e4<=now)fired[`${n}@${lead}`]=1});store.set("fired",fired)}
+/* Pewaktu tepat sasaran (selain interval 1 detik) agar tidak terlewat saat tab di latar belakang */
+let rt;function scheduleReminder(){clearTimeout(rt);const now=Date.now();let best=Infinity;
+[times,getTomorrow()].forEach(t=>NAMES.forEach(n=>{if(!remind[n]||!t[n])return;const x=t[n]-lead*6e4;if(x>now&&x<best)best=x}));
+if(best<Infinity)rt=setTimeout(()=>{tick();scheduleReminder()},Math.min(best-now+400,2147e6))}
+function setNotifState(){const el=$("#notifState"),b=$("#notifBtn"),t=$("#notifTest");
+if(!("Notification"in window)){b.hidden=true;t.hidden=true;
+el.textContent=isIOS&&!standalone()?"Di iPhone/iPad, notifikasi hanya tersedia setelah aplikasi dipasang ke Layar Utama (iOS 16.4 ke atas). Sementara ini pengingat tampil sebagai pesan di halaman.":"Browser ini belum mendukung notifikasi; pengingat tampil sebagai pesan di halaman.";return}
+const p=Notification.permission;b.hidden=p==="granted";t.hidden=p!=="granted";
+el.textContent=p==="granted"?"Notifikasi aktif. Pengingat muncul selama aplikasi terbuka atau berjalan di latar belakang. Jika aplikasi ditutup sepenuhnya, pengingat tidak dapat muncul.":p==="denied"?"Notifikasi diblokir di browser. Izinkan lewat pengaturan situs, lalu muat ulang halaman.":"Aktifkan notifikasi agar pengingat muncul di layar. Pengingat berjalan selama aplikasi terbuka."}
+$("#notifBtn").onclick=async()=>{let r;try{r=await Notification.requestPermission()}catch(e){}
+const p=r||Notification.permission;setNotifState();
+if(p==="granted"){const ok=await showNotif("Notifikasi aktif","Pengingat sholat akan muncul sesuai pengaturan Anda.","aktif");toast(ok?"Notifikasi diaktifkan.":"Izin diberikan, tetapi notifikasi gagal ditampilkan. Coba muat ulang halaman.")}
+else if(p==="denied")toast("Izin notifikasi ditolak. Izinkan lewat pengaturan situs di browser.")};
+$("#notifTest").onclick=async()=>{const ok=await showNotif("Tes notifikasi","Notifikasi Panduan Sholat berfungsi dengan baik.","tes");
+toast(ok?"Notifikasi tes dikirim.":"Notifikasi tes gagal. Periksa izin notifikasi di pengaturan browser.")};
+try{navigator.permissions&&navigator.permissions.query({name:"notifications"}).then(st=>{st.onchange=setNotifState}).catch(()=>{})}catch(e){}
+$("#leadSel").value=lead;$("#leadSel").onchange=e=>{lead=+e.target.value;store.set("lead",lead);markPassed();scheduleReminder();toast("Pengingat diatur.")};
+/* Pilih kota */
+$("#citySel").innerHTML=CITY_GROUPS.map(g=>`<optgroup label="${g.g}">${g.c.map(c=>`<option value="${c[0]}">${c[0]}</option>`).join("")}</optgroup>`).join("");
+$("#citySel").value=cityName;
+$("#citySel").onchange=e=>{cityName=e.target.value;store.set("city",cityName);computeTimes();markPassed();renderPrayers();scheduleReminder();tick();toast(`Jadwal diperbarui untuk ${cityName}.`)};
+/* Bangun ulang saat aplikasi kembali ke layar */
+const wake=()=>{if(!document.hidden){tick();scheduleReminder()}};
+document.addEventListener("visibilitychange",wake);window.addEventListener("focus",wake);window.addEventListener("pageshow",wake);
 
 /* Bersuci & pembatal */
 const acc=x=>x.map(y=>`<details class="acc glass"><summary>${y.t}</summary><p>${y.d}</p><p class="src">${y.s}</p></details>`).join("");
@@ -115,11 +154,9 @@ $$("[data-t]").forEach(c=>c.onchange=()=>{const s=new Set(log[k]||[]);c.checked?
 /* Bacaan */
 $("#readingGrid").innerHTML=Object.keys(G).map(g=>`<details class="acc glass lib"><summary>${G[g].title}<em>${G[g].items.length} ragam</em></summary><div class="gblk" data-g="${g}" data-lib="1">${gInner(g,true)}</div></details>`).join("");
 
-computeTimes();renderPrayers();setNotifState();render();showTip();renderTrack();tick();setInterval(tick,1000);
-setInterval(()=>{if(new Date().getHours()===0&&new Date().getMinutes()===0){computeTimes();renderPrayers();renderTrack()}},60000);
+computeTimes();renderPrayers();setNotifState();render();showTip();renderTrack();tick();scheduleReminder();setInterval(tick,1000);
 /* Instal aplikasi (PWA) */
-let dip=null;const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent||"");
-const standalone=()=>(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone;
+let dip=null;
 function syncInstall(){$$(".install-btn").forEach(b=>b.hidden=!!standalone())}
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();dip=e;syncInstall()});
 window.addEventListener("appinstalled",()=>{dip=null;$$(".install-btn").forEach(b=>b.hidden=true);toast("Aplikasi berhasil dipasang.")});
